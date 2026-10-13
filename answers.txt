@@ -1,0 +1,78 @@
+=== Question 1 — Linux Navigation & File Management ===
+#Answer below 
+
+1. Run `pwd` to confirm my current directory, then `ls -la` to list files including hidden files and details.
+2. Run `cd config` to enter the `config` directory. I can run `pwd` to verify the location.
+3. Run `cat app.conf` to display the file. For a long file, use `less app.conf` so I can scroll through it and exit with `q`.
+4. Run `mkdir backup` to create the backup directory. If it may already exist, `mkdir -p backup` avoids an error when it exists.
+5. Run `cp app.conf backup/app.conf` to copy the configuration file while leaving the original unchanged. Verify with `ls -l backup`.
+6. Before deleting `old-service.log`, verify its path and contents with `ls -l old-service.log` and, if needed, `less old-service.log`. Then use `rm old-service.log` only after confirming it is the correct file. Deletion may be irreversible, so follow the team's retention policy and back it up if needed.
+
+=== Question 2 — Functions ===
+#Answer below (Do not remove)
+
+A function is a named, reusable block of code that performs a task. Functions make programs easier to read, test, maintain, and reuse instead of repeating the same instructions. Define one with `def`:
+
+```python
+def greet(name):
+    message = "Hello, " + name
+    return message
+
+result = greet("Lebo")
+print(result)  # Hello, Lebo
+```
+
+`name` is a parameter: a variable named in the function definition. `"Lebo"` is an argument: the actual value supplied when the function is called. Parameters receive the arguments so the function can work with different inputs.
+
+`return` sends a result back to the code that called the function. The caller can store it, print it, or use it in another calculation. `print()` displays text but does not replace `return`; a function without a return statement returns `None` by default.
+
+Indentation defines which statements belong to the function and to each conditional branch. Python conventionally uses four spaces. Incorrect indentation can cause an `IndentationError` or make code run in the wrong branch.
+
+Inside a function, `if` checks a condition first, `elif` checks another condition only when earlier conditions were false, and `else` handles the remaining cases. For example:
+
+```python
+def result_for_mark(mark):
+    if mark >= 75:
+        return "Distinction"
+    elif mark >= 50:
+        return "Pass"
+    else:
+        return "Not yet passed"
+```
+
+The order matters: the most specific or highest threshold should be checked first. Each path above returns a string, so the caller receives a clear result.
+
+=== Question 3 — Reading and Debugging Code ===
+#Answer below (Do not remove)
+
+The function below should approve a learner only when attendance is at least 75%, the mark is at least 50%, and all tasks were completed.
+
+```python
+def learner_qualifies(attendance, mark, tasks_done, tasks_total):
+    attendance_ok = attendance > 75
+    mark_ok = mark >= 50
+    all_tasks_done = tasks_done / tasks_total
+
+    if attendance_ok:
+        return False
+    if not mark_ok:
+        return False
+    if not all_tasks_done:
+        return False
+    return True
+```
+
+There are three logic errors. First, `attendance > 75` excludes attendance of exactly 75%; it should be `attendance >= 75`. Second, the first conditional returns `False` when `attendance_ok` is true; it should return false when `not attendance_ok`. Third, `tasks_done / tasks_total` calculates a ratio rather than checking that all tasks were completed. It should be `tasks_done == tasks_total`; also, `tasks_total` should be checked to avoid a zero-division error in the original expression. A corrected version is:
+
+```python
+def learner_qualifies(attendance, mark, tasks_done, tasks_total):
+    if tasks_total <= 0 or tasks_done != tasks_total:
+        return False
+    if attendance < 75:
+        return False
+    if mark < 50:
+        return False
+    return True
+```
+
+For example, `learner_qualifies(75, 50, 4, 4)` returns `True`, while `learner_qualifies(74, 60, 4, 4)` returns `False` because attendance is below the minimum.
